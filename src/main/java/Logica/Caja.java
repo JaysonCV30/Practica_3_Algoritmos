@@ -1,90 +1,79 @@
 package Logica;
 
-import Logica.Cliente;
 import Logica.ColaSimple;
 
 public class Caja {
+
     private int id;
     private ColaSimple<Cliente> colaClientes;
     private boolean abierta;
     private double tiempoAbierta;
     private int clientesAtendidos;
+    private double tiempoTotalPagos;
 
     public Caja(int id) {
         this.id = id;
         this.colaClientes = new ColaSimple<>();
         this.abierta = false;
+        this.tiempoAbierta = 0;
+        this.clientesAtendidos = 0;
+        this.tiempoTotalPagos = 0;
     }
 
-    public void abrir() { abierta = true; }
-    public void cerrar() { abierta = false; colaClientes = new ColaSimple<>(); }
-
-    public void agregarCliente(Cliente c) {
-        colaClientes.insertar(c);
+    public void abrir() {
+        abierta = true;
     }
 
-    public Cliente atenderCliente() {
-        Cliente c = colaClientes.eliminar();
-        if (c != null) {
+    public void cerrar() {
+        abierta = false;
+        colaClientes = new ColaSimple<>();
+    }
+
+    public void agregarCliente(Cliente cliente) {
+        if (colaClientes.size() < 20) {
+            colaClientes.insertar(cliente);
+        } else {
+            System.out.println("La caja " + id + " está llena. Cliente no agregado.");
+        }
+    }
+
+    public Cliente atenderCliente(double tiempoActual) {
+        Cliente cliente = colaClientes.eliminar();
+        if (cliente != null) {
             clientesAtendidos++;
+            double tiempoEspera = tiempoActual - cliente.getTiempoLlegada();
+            cliente.setTiempoEspera(tiempoEspera);
+            cliente.setTiempoSalida(tiempoActual);
+            registrarPago(cliente.getTiempoPago());
         }
-        return c;
+        return cliente;
     }
 
-    public boolean estaAbierta() { return abierta; }
-    public int getClientesEnEspera() { return colaClientesSize(); }
+    public void registrarPago(double tiempoPago) {
+        tiempoTotalPagos += tiempoPago;
+    }
 
-    public int colaClientesSize() {
-        // Método auxiliar para contar elementos en ColaSimple
-        int count = 0;
-        ColaSimple<Cliente> copia = new ColaSimple<>();
-        Cliente temp;
-        while ((temp = colaClientes.eliminar()) != null) {
-            copia.insertar(temp);
-            count++;
-        }
-        // Restaurar cola original
-        while ((temp = copia.eliminar()) != null) {
-            colaClientes.insertar(temp);
-        }
-        return count;
+    public boolean estaAbierta() {
+        return abierta;
+    }
+
+    public int getClientesEnEspera() {
+        return colaClientes.size(); // usa tu método size() en ColaSimple
     }
 
     public ColaSimple<Cliente> getColaClientes() {
         return colaClientes;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isAbierta() {
-        return abierta;
-    }
-
-    public void setAbierta(boolean abierta) {
-        this.abierta = abierta;
-    }
-
-    public double getTiempoAbierta() {
-        return tiempoAbierta;
-    }
-
-    public void setTiempoAbierta(double tiempoAbierta) {
-        this.tiempoAbierta = tiempoAbierta;
-    }
-
     public int getClientesAtendidos() {
         return clientesAtendidos;
     }
 
-    public void setClientesAtendidos(int clientesAtendidos) {
-        this.clientesAtendidos = clientesAtendidos;
+    public double getTiempoTotalPagos() {
+        return tiempoTotalPagos;
     }
 
-    
+    public int getId() {
+        return id;
+    }
 }

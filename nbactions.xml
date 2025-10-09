@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-JavaFX</actionName>
+            <displayName>JavaFX</displayName>
+            <preAction>build-with-dependencies</preAction>
+            <goals>
+                <goal>javafx:run</goal>
+            </goals>
+        </action>
+    </actions>

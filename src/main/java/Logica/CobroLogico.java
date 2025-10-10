@@ -5,7 +5,7 @@ import GUI.CobroGrafico;
 public class CobroLogico implements Runnable {
 
     private int tiempoActual = 0;
-    private int jornada = 300;
+    private int jornada = 60;
     private int incremento = 1;
     private Simulador simulador;
     private CobroGrafico gui;
@@ -29,7 +29,7 @@ public class CobroLogico implements Runnable {
             // Llegada de cliente
             if (Math.random() < 0.3) {
                 Cliente nuevo = new Cliente(tiempoActual);
-                simulador.asignarCliente(nuevo);
+                simulador.asignarCliente(nuevo,tiempoActual);
             }
 
             // Cobro en cada caja
@@ -40,8 +40,8 @@ public class CobroLogico implements Runnable {
                     gui.mostrarClienteSaliendo(atendido);
                 }
             }
-            simulador.actualizarCajas();
-            gui.actualizarVista(simulador.getCajas());
+            simulador.actualizarCajas(tiempoActual);
+            gui.actualizarVista(simulador.getCajas(), tiempoActual);
             gui.actualizarTiempo(tiempoActual);
         }
 

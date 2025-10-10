@@ -8,6 +8,8 @@ public class Caja {
     private ColaSimple<Cliente> colaClientes;
     private boolean abierta;
     private double tiempoAbierta;
+    private double tiempoAbiertaTotal;
+    private double tiempoUltimaApertura;
     private int clientesAtendidos;
     private double tiempoTotalPagos;
 
@@ -20,12 +22,16 @@ public class Caja {
         this.tiempoTotalPagos = 0;
     }
 
-    public void abrir() {
-        abierta = true;
+    public void abrir(double tiempoActual) {
+        if (!abierta) {
+            abierta = true;
+            tiempoUltimaApertura = tiempoActual;
+        }
     }
 
-    public void cerrar() {
+    public void cerrar(double tiempoActual) {
         abierta = false;
+        tiempoAbiertaTotal += tiempoActual - tiempoUltimaApertura;
         colaClientes = new ColaSimple<>();
     }
 
@@ -71,6 +77,14 @@ public class Caja {
 
     public double getTiempoTotalPagos() {
         return tiempoTotalPagos;
+    }
+
+    public double getTiempoAbiertaTotal() {
+        return tiempoAbiertaTotal;
+    }
+
+    public double getTiempoAbiertaActual(double tiempoSimulado) {
+        return estaAbierta() ? tiempoSimulado - tiempoUltimaApertura : 0;
     }
 
     public int getId() {

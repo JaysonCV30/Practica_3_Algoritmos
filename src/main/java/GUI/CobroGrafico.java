@@ -41,29 +41,39 @@ public class CobroGrafico {
         });
     }
 
-    public void actualizarVista(List<Caja> cajas) {
+    public void actualizarVista(List<Caja> cajas, int tiempoActual) {
         Platform.runLater(() -> {
             panelCajas.getChildren().clear();
             for (Caja caja : cajas) {
                 VBox cajaVisual = new VBox(5);
+                cajaVisual.setStyle("-fx-alignment: center;");
 
-                Label lblCaja = new Label("Caja " + (caja.getId()+1));
-                lblCaja.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #333;");
-                cajaVisual.getChildren().add(lblCaja);
-                
+                // Etiqueta de título
+                Label lblTitulo = new Label("Caja " + (caja.getId() + 1));
+                lblTitulo.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+                // Estadísticas en tiempo real
+                double tiempoVisible = caja.estaAbierta()
+                        ? caja.getTiempoAbiertaActual(tiempoActual) + caja.getTiempoAbiertaTotal()
+                        : caja.getTiempoAbiertaTotal();
+                Label lblTiempoAbierta = new Label("Abierta: " + String.format("%.2f", tiempoVisible) + " seg");
+                Label lblClientes = new Label("Atendidos: " + caja.getClientesAtendidos());
+
                 ImageView imagenCaja = new ImageView(new Image(getClass().getResource(
                         caja.estaAbierta() ? "/Cajero_Abierto_gif.gif" : "/Cajero_Cerrado.png"
                 ).toExternalForm()));
                 imagenCaja.setFitWidth(90);
                 imagenCaja.setFitHeight(90);
-                cajaVisual.getChildren().add(imagenCaja);
 
+                VBox colaVisual = new VBox(3);
+                colaVisual.setStyle("-fx-alignment: center;");
                 for (Cliente cliente : caja.getColaClientes().obtenerElementos()) {
                     ImageView imagenCliente = new ImageView(new Image(getClass().getResource("/Cliente_gif.gif").toExternalForm()));
                     imagenCliente.setFitWidth(90);
                     imagenCliente.setFitHeight(90);
-                    cajaVisual.getChildren().add(imagenCliente);
+                    colaVisual.getChildren().add(imagenCliente);
                 }
+                cajaVisual.getChildren().addAll(lblTitulo, lblTiempoAbierta, lblClientes, imagenCaja, colaVisual);
                 panelCajas.getChildren().add(cajaVisual);
             }
         });

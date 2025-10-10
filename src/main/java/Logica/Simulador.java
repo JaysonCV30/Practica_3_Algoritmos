@@ -48,10 +48,20 @@ public class Simulador {
     public void asignarCliente(Cliente cliente) {
         if (modoFilaUnica) {
             Caja caja = obtenerCajaDisponible();
-            caja.agregarCliente(cliente);
+            if(caja.getClientesEnEspera() < 4){
+                caja.agregarCliente(cliente);
+            } else {
+                for(Caja c : cajas){
+                    if(!c.estaAbierta()){
+                        c.abrir();
+                        c.agregarCliente(cliente);
+                        return;
+                    }
+                }
+                obtenerCajaMasCorta().agregarCliente(cliente);
+            }
         } else {
-            Caja caja = obtenerCajaMasCorta();
-            caja.agregarCliente(cliente);
+            obtenerCajaMasCorta().agregarCliente(cliente);
         }
     }
 
@@ -86,7 +96,7 @@ public class Simulador {
         return mejor != null ? mejor : obtenerCajaDisponible();
     }
 
-    private void actualizarCajas() {
+    public void actualizarCajas() {
         for (Caja caja : cajas) {
             if (caja.estaAbierta() && caja.getClientesEnEspera() == 0) {
                 caja.cerrar();

@@ -36,10 +36,11 @@ public class CobroLogico implements Runnable {
             for (Caja caja : simulador.getCajas()) {
                 Cliente cliente = caja.getColaClientes().verProximo();
                 if (cliente != null && tiempoActual - cliente.getTiempoLlegada() >= cliente.getTiempoPago()) {
-                    caja.atenderCliente(tiempoActual);
+                    Cliente atendido = caja.atenderCliente(tiempoActual);
+                    gui.mostrarClienteSaliendo(atendido);
                 }
             }
-
+            simulador.actualizarCajas();
             gui.actualizarVista(simulador.getCajas());
             gui.actualizarTiempo(tiempoActual);
         }

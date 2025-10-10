@@ -12,6 +12,7 @@ public class SimuladorMain extends Application {
 
     private Label lblTiempo;
     private HBox panelFilas;
+    private HBox panelSalida;
     private Simulador simulador;
     private CobroGrafico grafico;
     private CobroLogico logico;
@@ -19,22 +20,32 @@ public class SimuladorMain extends Application {
     @Override
     public void start(Stage stage) {
         simulador = new Simulador(true);
-        
+
         lblTiempo = new Label("Tiempo: 0");
         panelFilas = new HBox(10);
-        
-        grafico = new CobroGrafico(lblTiempo, panelFilas);
-        logico = new CobroLogico(simulador, grafico);
-        
-        Button btnEjecutar = new Button("Ejecutar Simulacion");
+        panelSalida = new HBox(10);
+
+        Label lblSalida = new Label("Salida:");
+
+        Button btnEjecutar = new Button("Ejecutar Simulación");
         btnEjecutar.setOnAction(e -> {
             Thread hiloSimulacion = new Thread(logico);
             hiloSimulacion.setDaemon(true);
             hiloSimulacion.start();
         });
 
-        VBox root = new VBox(20, btnEjecutar, lblTiempo, panelFilas);
-        Scene scene = new Scene(root, 1000, 600);
+        grafico = new CobroGrafico(lblTiempo, panelFilas, panelSalida);
+        logico = new CobroLogico(simulador, grafico);
+
+        BorderPane root = new BorderPane();
+
+        VBox centro = new VBox(20, btnEjecutar, lblTiempo, panelFilas);
+        VBox salidaVisual = new VBox(5, lblSalida, panelSalida);
+        salidaVisual.setStyle("-fx-alignment: center-right;");
+
+        root.setCenter(centro);
+        root.setRight(salidaVisual);
+        Scene scene = new Scene(root, 1400, 800);
         stage.setScene(scene);
         stage.setTitle("Simulador de Filas - Costco");
         stage.show();

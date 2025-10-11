@@ -11,6 +11,7 @@ public class Simulador {
 
     private List<Caja> cajas;
     private List<Cliente> clientes;
+    private List<Cliente> clientesAtendidos;
     private boolean modoFilaUnica;
     private Random random;
 
@@ -18,7 +19,7 @@ public class Simulador {
         this.modoFilaUnica = modoFilaUnica;
         this.cajas = new ArrayList<>();
         this.clientes = new ArrayList<>();
-        //this.tiempoActual = 0;
+        this.clientesAtendidos = new ArrayList<>();
         this.random = new Random();
 
         for (int i = 0; i < 12; i++) {
@@ -28,7 +29,7 @@ public class Simulador {
 
     public void ejecutarSimulacion() {
         double tiempoActual = 0;
-        double tiempoSimulacion = 60;
+        double tiempoSimulacion = 180;
         int idCliente = 0;
 
         while (tiempoActual < tiempoSimulacion) {
@@ -112,9 +113,11 @@ public class Simulador {
                 Cliente cliente = caja.atenderCliente(tiempoActual);
                 if (cliente != null) {
                     cliente.setTiempoEspera(tiempoActual - cliente.getTiempoLlegada());
+                    cliente.setTiempoInicioPago(tiempoActual); 
                     tiempoActual += cliente.getTiempoPago();
                     cliente.setTiempoSalida(tiempoActual);
                     caja.registrarPago(cliente.getTiempoPago());
+                    registrarClienteAtendido(cliente);
                 }
             }
         }
@@ -158,5 +161,13 @@ public class Simulador {
             sb.append("  Pago: ").append(String.format("%.2f", c.getTiempoPago())).append(" min\n\n");
         }
         return sb.toString();
+    }
+
+    public void registrarClienteAtendido(Cliente cliente) {
+        clientesAtendidos.add(cliente);
+    }
+
+    public List<Cliente> getClientesAtendidos() {
+        return clientesAtendidos;
     }
 }

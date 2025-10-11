@@ -7,6 +7,7 @@ public class Cliente {
     private double tiempoPago;
     private double tiempoEspera;
     private double tiempoSalida;
+    private double tiempoInicioPago;
 
     public Cliente(int id, double tiempoLlegada, double tiempoPago) {
         this.id = id;
@@ -14,16 +15,10 @@ public class Cliente {
         this.tiempoPago = tiempoPago;
     }
 
-    public Cliente(int id, double tiempoLlegada) {
-        this.id = id;
-        this.tiempoLlegada = tiempoLlegada;
-        this.tiempoPago = Math.random() * 5 + 5; // entre 5 y 10 segundos
-    }
-
     public Cliente(int idLlegada) {
         this.id = idLlegada;
         this.tiempoLlegada = idLlegada;
-        this.tiempoPago = Math.random() * 5 + 5; // entre 5 y 10 segundos
+        this.tiempoPago = Math.random() * 2 + 3; // entre 3 y 5 segundos
     }
 
     public int getId() {
@@ -52,5 +47,21 @@ public class Cliente {
 
     public void setTiempoSalida(double tiempoSalida) {
         this.tiempoSalida = tiempoSalida;
+    }
+
+    public void setTiempoInicioPago(double tiempoInicioPago) {
+        this.tiempoInicioPago = tiempoInicioPago;
+    }
+
+    public double getTiempoInicioPago() {
+        return tiempoInicioPago;
+    }
+
+    public double getTiempoEsperaCalculado() {
+        return tiempoInicioPago - tiempoLlegada;
+    }
+
+    public double getDuracionPago() {
+        return tiempoSalida - tiempoInicioPago;
     }
 }

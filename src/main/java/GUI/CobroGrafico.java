@@ -9,6 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import java.util.List;
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
@@ -17,6 +22,7 @@ public class CobroGrafico {
     private Label lblTiempo;
     private HBox panelCajas;
     private HBox panelSalida;
+    private TableView<Cliente> tablaClientes = new TableView<>();
 
     public CobroGrafico(Label lblTiempo, HBox panelCajas, HBox panelSalida) {
         this.lblTiempo = lblTiempo;
@@ -35,18 +41,47 @@ public class CobroGrafico {
             imagenSalida.setFitHeight(70);
             panelSalida.getChildren().add(imagenSalida);
 
-            PauseTransition delay = new PauseTransition(Duration.seconds(3)); // visible por 3 segundos
+            PauseTransition delay = new PauseTransition(Duration.seconds(1)); // visible por 3 segundos
             delay.setOnFinished(event -> panelSalida.getChildren().remove(imagenSalida));
             delay.play();
         });
     }
 
+    public void mostrarEstadisticasClientes(List<Cliente> clientes) {
+        Platform.runLater(() -> {
+            tablaClientes.getColumns().clear();
+
+            TableColumn<Cliente, Integer> colId = new TableColumn<>("ID");
+            colId.setCellValueFactory(data -> new SimpleIntegerProperty(data.getValue().getId()).asObject());
+
+            TableColumn<Cliente, Double> colLlegada = new TableColumn<>("Llegada");
+            colLlegada.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTiempoLlegada()).asObject());
+
+            TableColumn<Cliente, Double> colEspera = new TableColumn<>("Espera");
+            colEspera.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getTiempoEsperaCalculado()).asObject());
+
+            TableColumn<Cliente, Double> colPago = new TableColumn<>("Pago");
+            colPago.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getDuracionPago()).asObject());
+
+            tablaClientes.getColumns().addAll(colId, colLlegada, colEspera, colPago);
+            tablaClientes.setItems(FXCollections.observableArrayList(clientes));
+        });
+    }
+
+    public TableView<Cliente> getTablaClientes() {
+        return tablaClientes;
+    }
+
     public void actualizarVista(List<Caja> cajas, int tiempoActual) {
         Platform.runLater(() -> {
+            panelCajas.setStyle("-fx-alignment: top-center;");
             panelCajas.getChildren().clear();
             for (Caja caja : cajas) {
                 VBox cajaVisual = new VBox(5);
                 cajaVisual.setStyle("-fx-alignment: center;");
+                cajaVisual.setPrefHeight(300);
+                cajaVisual.setMaxHeight(300);
+                cajaVisual.setMinHeight(300);
 
                 // Etiqueta de título
                 Label lblTitulo = new Label("Caja " + (caja.getId() + 1));
@@ -66,13 +101,19 @@ public class CobroGrafico {
                 imagenCaja.setFitHeight(90);
 
                 VBox colaVisual = new VBox(3);
-                colaVisual.setStyle("-fx-alignment: center;");
-                for (Cliente cliente : caja.getColaClientes().obtenerElementos()) {
+                colaVisual.setPrefHeight(120);
+                colaVisual.setMaxHeight(120);
+                colaVisual.setMinHeight(120);
+                colaVisual.setStyle("-fx-alignment: top-center;");
+                List<Cliente> clientes = caja.getColaClientes().obtenerElementos();
+                for (int i = 0; i < Math.min(clientes.size(), 4); i++) {
+                    Cliente cliente = clientes.get(i);
                     ImageView imagenCliente = new ImageView(new Image(getClass().getResource("/Cliente_gif.gif").toExternalForm()));
                     imagenCliente.setFitWidth(90);
                     imagenCliente.setFitHeight(90);
                     colaVisual.getChildren().add(imagenCliente);
                 }
+
                 cajaVisual.getChildren().addAll(lblTitulo, lblTiempoAbierta, lblClientes, imagenCaja, colaVisual);
                 panelCajas.getChildren().add(cajaVisual);
             }

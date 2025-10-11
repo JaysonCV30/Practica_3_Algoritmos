@@ -35,6 +35,9 @@ public class SimuladorMain extends Application {
         });
 
         grafico = new CobroGrafico(lblTiempo, panelFilas, panelSalida);
+        grafico.getTablaClientes().setPrefHeight(250);
+        grafico.getTablaClientes().setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        grafico.getTablaClientes().setVisible(false);
         logico = new CobroLogico(simulador, grafico);
 
         BorderPane root = new BorderPane();
@@ -45,7 +48,8 @@ public class SimuladorMain extends Application {
 
         root.setCenter(centro);
         root.setRight(salidaVisual);
-        Scene scene = new Scene(root, 1400, 800);
+        root.setBottom(grafico.getTablaClientes());
+        Scene scene = new Scene(root, 1500, 900);
         stage.setScene(scene);
         stage.setTitle("Simulador de Filas - Costco");
         stage.show();

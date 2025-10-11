@@ -47,9 +47,9 @@ public class Caja {
         Cliente cliente = colaClientes.eliminar();
         if (cliente != null) {
             clientesAtendidos++;
-            double tiempoEspera = tiempoActual - cliente.getTiempoLlegada();
-            cliente.setTiempoEspera(tiempoEspera);
-            cliente.setTiempoSalida(tiempoActual);
+            cliente.setTiempoInicioPago(tiempoActual);
+            cliente.setTiempoEspera(tiempoActual - cliente.getTiempoLlegada());
+            cliente.setTiempoSalida(tiempoActual + cliente.getTiempoPago());
             registrarPago(cliente.getTiempoPago());
         }
         return cliente;
@@ -64,7 +64,7 @@ public class Caja {
     }
 
     public int getClientesEnEspera() {
-        return colaClientes.size(); // usa tu método size() en ColaSimple
+        return colaClientes.size(); 
     }
 
     public ColaSimple<Cliente> getColaClientes() {

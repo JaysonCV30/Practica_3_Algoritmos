@@ -3,33 +3,31 @@ package Logica;
 import Logica.ColaSimple;
 import Logica.Cliente;
 import Logica.Caja;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Simulador {
 
-    private List<Caja> cajas;
-    private List<Cliente> clientes;
-    private List<Cliente> clientesAtendidos;
+    private Caja[] cajas;
+    private ColaSimple<Cliente> clientes;
+    private ColaSimple<Cliente> clientesAtendidos;
     private boolean modoFilaUnica;
     private Random random;
 
     public Simulador(boolean modoFilaUnica) {
         this.modoFilaUnica = modoFilaUnica;
-        this.cajas = new ArrayList<>();
-        this.clientes = new ArrayList<>();
-        this.clientesAtendidos = new ArrayList<>();
+        this.cajas = new Caja[12];
+        this.clientes = new ColaSimple<>();
+        this.clientesAtendidos = new ColaSimple<>();
         this.random = new Random();
 
-        for (int i = 0; i < 12; i++) {
-            cajas.add(new Caja(i));
+        for (int i = 0; i < cajas.length; i++) {
+            cajas[i] = new Caja(i);
         }
     }
 
     public void ejecutarSimulacion() {
         double tiempoActual = 0;
-        double tiempoSimulacion = 180;
+        double tiempoSimulacion = 600;
         int idCliente = 0;
 
         while (tiempoActual < tiempoSimulacion) {
@@ -37,7 +35,7 @@ public class Simulador {
             double tiempoPago = generarAleatorioSegundos(3.0, 5.0);
 
             Cliente cliente = new Cliente(idCliente++, tiempoLlegada, tiempoPago);
-            clientes.add(cliente);
+            clientes.insertar(cliente);
             tiempoActual = tiempoLlegada;
 
             asignarCliente(cliente, tiempoActual);
@@ -81,7 +79,7 @@ public class Simulador {
                 return caja;
             }
         }
-        return cajas.get(0); // fallback
+        return cajas[0];
     }
 
     private Caja obtenerCajaMasCorta(double tiempoActual) {
@@ -127,11 +125,11 @@ public class Simulador {
         return min + (max - min) * random.nextDouble();
     }
 
-    public List<Caja> getCajas() {
+    public Caja[] getCajas() {
         return cajas;
     }
 
-    public List<Cliente> getClientes() {
+    public ColaSimple<Cliente> getClientes() {
         return clientes;
     }
 
@@ -153,9 +151,10 @@ public class Simulador {
         return sb.toString();
     }
 
+    //Solamente se usa para visualizar estadisticas no afecta a la cola ni se modifica.
     public String generarResumenClientes() {
         StringBuilder sb = new StringBuilder();
-        for (Cliente c : clientes) {
+        for (Cliente c : clientes.obtenerElementos()) {
             sb.append("Cliente ").append(c.getId()).append(":\n");
             sb.append("  Espera: ").append(String.format("%.2f", c.getTiempoEspera())).append(" min\n");
             sb.append("  Pago: ").append(String.format("%.2f", c.getTiempoPago())).append(" min\n\n");
@@ -164,10 +163,10 @@ public class Simulador {
     }
 
     public void registrarClienteAtendido(Cliente cliente) {
-        clientesAtendidos.add(cliente);
+        clientesAtendidos.insertar(cliente);
     }
 
-    public List<Cliente> getClientesAtendidos() {
+    public ColaSimple<Cliente> getClientesAtendidos() {
         return clientesAtendidos;
     }
 }

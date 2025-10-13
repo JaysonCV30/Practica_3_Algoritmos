@@ -2,6 +2,7 @@ package GUI;
 
 import Logica.Caja;
 import Logica.Cliente;
+import Logica.ColaSimple;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -47,7 +48,7 @@ public class CobroGrafico {
         });
     }
 
-    public void mostrarEstadisticasClientes(List<Cliente> clientes) {
+    public void mostrarEstadisticasClientes(ColaSimple<Cliente> clientes) {
         Platform.runLater(() -> {
             tablaClientes.getColumns().clear();
 
@@ -64,7 +65,7 @@ public class CobroGrafico {
             colPago.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().getDuracionPago()).asObject());
 
             tablaClientes.getColumns().addAll(colId, colLlegada, colEspera, colPago);
-            tablaClientes.setItems(FXCollections.observableArrayList(clientes));
+            tablaClientes.setItems(FXCollections.observableArrayList(clientes.obtenerElementos()));
         });
     }
 
@@ -72,7 +73,7 @@ public class CobroGrafico {
         return tablaClientes;
     }
 
-    public void actualizarVista(List<Caja> cajas, int tiempoActual) {
+    public void actualizarVista(Caja[] cajas, int tiempoActual) {
         Platform.runLater(() -> {
             panelCajas.setStyle("-fx-alignment: top-center;");
             panelCajas.getChildren().clear();

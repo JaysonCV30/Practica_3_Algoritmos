@@ -12,7 +12,7 @@ public class ColaSimple<T> {
     public ColaSimple() {
         this.inicio = -1;
         this.fin = -1;
-        this.max = 500;
+        this.max = 6000;
         colaSimple = (T[]) new Object[max];
     }
 

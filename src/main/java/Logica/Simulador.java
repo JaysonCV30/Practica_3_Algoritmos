@@ -23,6 +23,11 @@ public class Simulador {
         for (int i = 0; i < cajas.length; i++) {
             cajas[i] = new Caja(i);
         }
+        if (!modoFilaUnica) {
+            for (Caja caja : cajas) {
+                caja.abrir(0);
+            }
+        }
     }
 
     public void ejecutarSimulacion() {
@@ -98,9 +103,11 @@ public class Simulador {
     }
 
     public void actualizarCajas(double tiempoActual) {
-        for (Caja caja : cajas) {
-            if (caja.estaAbierta() && caja.getClientesEnEspera() == 0) {
-                caja.cerrar(tiempoActual);
+        if (modoFilaUnica) {
+            for (Caja caja : cajas) {
+                if (caja.estaAbierta() && caja.getClientesEnEspera() == 0) {
+                    caja.cerrar(tiempoActual);
+                }
             }
         }
     }
@@ -111,7 +118,7 @@ public class Simulador {
                 Cliente cliente = caja.atenderCliente(tiempoActual);
                 if (cliente != null) {
                     cliente.setTiempoEspera(tiempoActual - cliente.getTiempoLlegada());
-                    cliente.setTiempoInicioPago(tiempoActual); 
+                    cliente.setTiempoInicioPago(tiempoActual);
                     tiempoActual += cliente.getTiempoPago();
                     cliente.setTiempoSalida(tiempoActual);
                     caja.registrarPago(cliente.getTiempoPago());

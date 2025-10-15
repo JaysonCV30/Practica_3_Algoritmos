@@ -42,7 +42,7 @@ public class CobroGrafico {
             imagenSalida.setFitHeight(70);
             panelSalida.getChildren().add(imagenSalida);
 
-            PauseTransition delay = new PauseTransition(Duration.seconds(1)); // visible por 3 segundos
+            PauseTransition delay = new PauseTransition(Duration.seconds(1)); // visible por 1 segundo
             delay.setOnFinished(event -> panelSalida.getChildren().remove(imagenSalida));
             delay.play();
         });

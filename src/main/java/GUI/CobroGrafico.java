@@ -24,6 +24,10 @@ public class CobroGrafico {
     private HBox panelCajas;
     private HBox panelSalida;
     private TableView<Cliente> tablaClientes = new TableView<>();
+    private static final Image IMG_CAJERO_ABIERTO = new Image(CobroGrafico.class.getResource("/Cajero_Abierto_gif.gif").toExternalForm());
+    private static final Image IMG_CAJERO_CERRADO = new Image(CobroGrafico.class.getResource("/Cajero_Cerrado.png").toExternalForm());
+    private static final Image IMG_CLIENTE = new Image(CobroGrafico.class.getResource("/Cliente_gif.gif").toExternalForm());
+    private static final Image IMG_SALIDA = new Image(CobroGrafico.class.getResource("/Cliente_Saliendo.png").toExternalForm());
 
     public CobroGrafico(Label lblTiempo, HBox panelCajas, HBox panelSalida) {
         this.lblTiempo = lblTiempo;
@@ -37,7 +41,7 @@ public class CobroGrafico {
 
     public void mostrarClienteSaliendo(Cliente cliente) {
         Platform.runLater(() -> {
-            ImageView imagenSalida = new ImageView(new Image(getClass().getResource("/Cliente_Saliendo.png").toExternalForm()));
+            ImageView imagenSalida = new ImageView(IMG_SALIDA);
             imagenSalida.setFitWidth(70);
             imagenSalida.setFitHeight(70);
             panelSalida.getChildren().add(imagenSalida);
@@ -95,9 +99,7 @@ public class CobroGrafico {
                 Label lblTiempoAbierta = new Label("Abierta: " + String.format("%.2f", tiempoVisible) + " seg");
                 Label lblClientes = new Label("Atendidos: " + caja.getClientesAtendidos());
 
-                ImageView imagenCaja = new ImageView(new Image(getClass().getResource(
-                        caja.estaAbierta() ? "/Cajero_Abierto_gif.gif" : "/Cajero_Cerrado.png"
-                ).toExternalForm()));
+                ImageView imagenCaja = new ImageView(caja.estaAbierta() ? IMG_CAJERO_ABIERTO : IMG_CAJERO_CERRADO);
                 imagenCaja.setFitWidth(90);
                 imagenCaja.setFitHeight(90);
 
@@ -109,7 +111,7 @@ public class CobroGrafico {
                 List<Cliente> clientes = caja.getColaClientes().obtenerElementos();
                 for (int i = 0; i < Math.min(clientes.size(), 4); i++) {
                     Cliente cliente = clientes.get(i);
-                    ImageView imagenCliente = new ImageView(new Image(getClass().getResource("/Cliente_gif.gif").toExternalForm()));
+                    ImageView imagenCliente = new ImageView(IMG_CLIENTE);
                     imagenCliente.setFitWidth(90);
                     imagenCliente.setFitHeight(90);
                     colaVisual.getChildren().add(imagenCliente);

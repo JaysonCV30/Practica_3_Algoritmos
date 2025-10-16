@@ -5,7 +5,7 @@ import GUI.CobroGrafico;
 public class CobroLogico implements Runnable {
 
     private double tiempoActual = 0;
-    private int jornada = 600;
+    private int jornada = 180;
     private int incremento = 1;
     private Simulador simulador;
     private CobroGrafico gui;

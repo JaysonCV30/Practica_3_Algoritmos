@@ -32,7 +32,7 @@ public class Simulador {
 
     public void ejecutarSimulacion() {
         double tiempoActual = 0;
-        double tiempoSimulacion = 600;
+        double tiempoSimulacion = 180;
         int idCliente = 0;
 
         while (tiempoActual < tiempoSimulacion) {
